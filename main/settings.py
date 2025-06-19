@@ -120,3 +120,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # VARIABLES QUE INTEGRAN LOS REDIRECTS DE AUTH
 LOGIN_REDIRECT_URL = 'index-page'
 LOGOUT_REDIRECT_URL = 'index-page'
+
+
+#Candela Gullo:
+
+# Esta línea define el backend de envío de correo.
+# Para permitir enviar correos reales a través de un servidor (Gmail).
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Especifica el servidor Gmail que se va a usar para enviar los correos.
+EMAIL_HOST = 'smtp.gmail.com'
+
+# Puerto que usa Gmail para la conexión segura TLS
+EMAIL_PORT = 587
+
+# Indica que se debe usar el protocolo TLS para enviar el correo de forma segura (cifrada).
+EMAIL_USE_TLS = True
+
+# Correo desde el cual se enviarán los mensajes (puse el mio como ejemplo).
+EMAIL_HOST_USER = 'candegullo22@gmail.com'
+
+# Esta contraseña permite que Django se conecte a Gmail para enviar correos.
+EMAIL_HOST_PASSWORD = 'jtpf oqdn waui puor'
+
+# Dirección de correo que se mostrará como remitente por defecto al enviar emails.
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
