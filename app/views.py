@@ -5,7 +5,7 @@ from .layers.services import services
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
-#Candela Gullo: Importa el modelo User de Django, que representa a los usuarios registrados en la aplicación.
+#Candela Gullo: Importa el modelo User de Django, que representa a los usuarios registrados en la aplicacion.
 from django.contrib.auth.models import User
 
 #Candela Gullo: Permite mostrar mensajes tipo alerta en la web (por ejemplo, mensajes de éxito o error).
@@ -17,6 +17,10 @@ from django.conf import settings
 #Candela Gullo: Función integrada de Django para enviar correos electrónicos desde el servidor.
 from django.core.mail import send_mail
 
+#Candela Gullo: Importa el modelo Favourite desde el archivo models.py que está en el mismo modulo por eso el punto . al comienzo.
+from .models import Favourite
+
+
 
 def index_page(request):
     return render(request, 'index.html')
@@ -27,8 +31,23 @@ def home(request):
     #Candela Gullo: Hice que la lista retorne las tarjetas modificadas y definidas en la pagina "Services"
     images = services.getAllImages()
 
+    favourites = []
+    favourite_ids = []
+
+    #Candela Gullo: Verifica si el usuario esta logueado.
+    if request.user.is_authenticated:
+
+        #Candela Gullo: obtiene de la base de datos todos los favoritos que le pertenecen. Se usa filter(user=request.user) para filtrar solo los de ese usuario.
+        favourites = Favourite.objects.filter(user=request.user)
+
+        #Candela Gullo: es para extraer unicamente los id de cada favorito y guardarlos en la lista favourite_ids.
+        favourite_ids = [fav.id for fav in favourites]
+
     #Candela Gullo: retorna las imagenes en la pagina "home.html"
-    return render(request, 'home.html', { 'images': images })
+    return render(request, 'home.html', {
+        'images': images,
+        'favourite_ids': favourite_ids
+    })
 
 # función utilizada en el buscador.
 def search(request):
@@ -45,12 +64,12 @@ def search(request):
     else:
         return redirect('home')
 
-# función utilizada para filtrar por el tipo del Pokemon
+# funcion utilizada para filtrar por el tipo del Pokemon
 def filter_by_type(request):
     type = request.POST.get('type', '')
 
     if type != '':
-        images = [] # debe traer un listado filtrado de imágenes, segun si es o contiene ese tipo.
+        images = [] # debe traer un listado filtrado de imagenes, segun si es o contiene ese tipo.
         favourite_list = []
 
         return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
@@ -70,9 +89,9 @@ def register(request):
         password = request.POST['password']
         email = request.POST['email']
 
-        # Candela Gullo: Verifica si el nombre de usuario ya está en uso
+        # Candela Gullo: Verifica si el nombre de usuario ya esta en uso
         if User.objects.filter(username=username).exists():
-            # Candela Gullo: Si no muestra un mensaje de error y vuelve a la misma página
+            # Candela Gullo: Si no muestra un mensaje de error y vuelve a la misma pagina
             messages.error(request, 'El nombre de usuario ya existe. Elegí otro.')
             return redirect('register')  #Candela Gullo:  "register" es el nombre de la ruta en urls.py a la cual redirije si esta mal
 
@@ -85,7 +104,7 @@ def register(request):
             last_name=last_name
         )
 
-        # Candela Gullo: Se crea un mensaje personalizado que se enviará por correo.
+        # Candela Gullo: Se crea un mensaje personalizado que se mandara por correo.
         # Candela Gullo: Que incluye un saludo al nuevo usuario, su nombre de usuario y su contraseña.
         mensaje = f"Bienvenido {first_name}!\n\nTus credenciales son:\nUsuario: {username}\nContraseña: {password}"
 
@@ -108,17 +127,72 @@ def register(request):
     return render(request, 'registration/register.html')
 
 # Estas funciones se usan cuando el usuario está logueado en la aplicación.
-@login_required
-def getAllFavouritesByUser(request):
-    pass
 
 @login_required
 def saveFavourite(request):
-    pass
+    if request.method == 'POST':
 
+        #Candela Gullo: extraemos los datos del formulario de HTML.
+        poke_id = request.POST.get('id')
+        name = request.POST.get('name')
+        height = request.POST.get('height')
+        weight = request.POST.get('weight')
+        base_experience = request.POST.get('base_experience')
+        types = request.POST.getlist('types')
+        image = request.POST.get('image')
+
+        # Candela Gullo: verifica si el favorito ya existe para ese usuario.
+        exists = Favourite.objects.filter(user=request.user, name=name).exists()
+
+        #Candela Gullo: Si no existe, se crea y guarda un nuevo objeto Favourite con los datos del Pokémon y el usuario actual.
+        if not exists:
+            Favourite.objects.create(
+                id=poke_id,
+                name=name,
+                height=height,
+                weight=weight,
+                base_experience=base_experience,
+                types=types,
+                image=image,
+                user=request.user
+            )
+        #Candela Gullo: Si ya existe, se muestra un mensaje informativo indicando que ya fue agregado antes.
+        else:
+            messages.info(request, 'Ese Pokémon ya está en tus favoritos.')
+
+    #Candela Gullo: despues te redirije a la pagina de galeria
+    return redirect('home')
+
+# Mostrar la lista de favoritos
+@login_required
+def getAllFavouritesByUser(request):
+
+    #Candela Gullo: Obtiene todos los favoritos que pertenecen al usuario actualmente autenticado.
+    favoritos = Favourite.objects.filter(user=request.user)
+
+    return render(request, 'favourites.html', {'favourite_list': favoritos})
+
+# Eliminar un favorito
 @login_required
 def deleteFavourite(request):
-    pass
+
+    #Candela Gullo: Esta función también espera un método POST y obtiene el ID del Pokémon a eliminar.
+    if request.method == 'POST':
+        fav_id = request.POST.get('id')
+
+        # Candela Gullo: Buscamos el favorito del usuario actual con el ID dado
+        fav = Favourite.objects.filter(id=fav_id, user=request.user).first()
+
+        if fav:
+            fav.delete()
+            # Candela Gullo: Mensaje de éxito si se elimina correctamente
+            messages.success(request, 'El favorito fue eliminado.')
+        else:
+            # Candela Gullo: Mensaje de error si no se encuentra el favorito
+            messages.error(request, 'No se encontró el favorito o no te pertenece.')
+
+    # Candela Gullo: Redirige a la lista de favoritos
+    return redirect('favoritos')  
 
 @login_required
 def exit(request):
