@@ -1,45 +1,54 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+<head >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POKEDEX - IP</title>
+
     {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %} {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" type="text/css " href="{% static 'styles.css' %}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Proyecto TP</a>
+            <a class="btn btn-outline-danger" href="#">Proyecto TP</a>
+            <!--Noelia B. se agrego recuadro de color rojo a Proyecto TP-->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            
+           <div class="d-flex justify-content-center w-100 ">
+            <!--Noelia B. modifique la posision de los button para que aparezcan centrados en la pag--> 
+                <ul class="navbar-nav mu-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index-page' %}">Inicio</a>
+                        <!--Noelia B. reemplace la class para que en la pag principal el enlace tenga boton y salga recuadrado y pintado-->
+                        <!--Noelia B. Hice esto con cada boton que sale en la pag, sea ejecutado o no-->
+                        <a class=" btn btn-warning " aria-current="page" href="{% url 'index-page' %}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><strong>Galería</strong></a>
+                        <a class="btn btn-warning  " aria-current="page" href="{% url 'home' %}">Galería</a>
+                        <!--Noelia B. Borre <strong> de la palabra Galeria para que en pantalla todas las palabra se vean igual -->
                     </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'favoritos' %}">Favoritos</a>
+                        <a class="btn btn-warning" href="{% url 'favoritos' %}">Favoritos</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
                         {% if request.user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'exit' %}">Salir</a> {% else %}
-                        <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a> {% endif %}
+                        <a class= "btn btn-warning "href="{% url 'exit' %}">Salir</a> {% else %}
+                        <a class="btn btn-warning  " href="{% url 'login' %}">Iniciar sesión</a> {% endif %}
                     </li>
                 </ul>
 
-
             </div>
-        </div>
-    </nav>
+        
+    </div>
+</nav>
 
     {% block content %} {% endblock %} {% include "footer.html" %}
