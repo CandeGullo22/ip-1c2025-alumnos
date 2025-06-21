@@ -9,7 +9,10 @@ urlpatterns = [
     
     path('buscar/', views.search, name='buscar'),
     path('filter_by_type/', views.filter_by_type, name='filter_by_type'),
-
+    
+    #Candela G. conecta la URL con la funcion que se va a ejecutar
+    path('registro/', views.register, name='register'),
+    
     path('favourites/', views.getAllFavouritesByUser, name='favoritos'),
     path('favourites/add/', views.saveFavourite, name='agregar-favorito'),
     path('favourites/delete/', views.deleteFavourite, name='borrar-favorito'),

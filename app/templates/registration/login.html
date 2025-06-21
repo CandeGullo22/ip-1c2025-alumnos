@@ -1,17 +1,39 @@
 {% extends 'header.html' %} {% block content %}
-<div class="login-form" style="text-align: center;">
+<!--Noelia B. Agrege a class un codigo que centra todo a mitade pantalla -->
+<div class="login-form position-absolute top-50 start-50 translate-middle" style="text-align: center;">
     <form action="" method="POST" style="display: inline-block;">
         {% csrf_token %}
         <h2 class="text-center">Inicio de sesión</h2>
-        <div class="form-group" style="margin-bottom: 5%;">
-            <input type="text" name="username" id="username" class="form-control" placeholder="Usuario" required="required">
+        <div class="form-group " style="margin-bottom: 5%;">
+
+            <!--Noelia B.se inserto varias lineas que hacen que al escribir en el formulario el recuadro se remarque -->
+            <div class="input-group" style="margin-bottom: 5%;"> 
+                <span class="input-group-text">@</span> <!--ademas se agrega un señalador-->
+                <div class="form-floating"> 
+                    <input type="text" class="form-control " id="floatingInputGroup1" placeholder="Username">
+                    <label for="floatingInputGroup1">Nombre de Usuario</label>
+                </div> <!--Noelia B. por cada <div> que se "abar" hay que cerrar con </div>-->
+            </div>
         </div>
-        <div class="form-group" style="margin-bottom: 5%;">
-            <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required="required">
+        <div class="form-group" style="margin-bottom: 5%;" >
+            <div class="input-group "> <!--Noelia B. codigo agregado -->
+                <span class="input-group-text">🗝️</span> <!--Noelia B. codigo agregado -->
+                <div class="form-floating">
+                    <input type="password" name="password" id="password" class="form-control" placeholder="contraseña" required="required">
+                    <label for="passwordInput" > Contraseña </label> 
+                    <!-- Noelia B. se modifico para que aparezca un recuadro flotante-->
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+
         </div>
+        <div class="form-group mb-3 ">
+            <button type="submit" class="btn btn-success btn-block">Ingresar</button> 
+            <!--Noelia B. se cambio el color del boton de Ingresar para que vaya acorde al esquema de colores que se esta usando -->
+            <!--Candela G. este es el boton que te redirije a la pagina  "register.html" para que el usuario pueda logearse-->
+            <a href="{% url 'register' %}">Registrarse 📲</a> <!--Noelia B. se agrega un emoji, lo hace mas entretenido y vistoso como la paina de un juego-->
+        </div>
+
     </form>
 </div>
 {% endblock %}
