@@ -1,3 +1,4 @@
+
 {% extends 'header.html' %} {% block content %}
     <!--Candela Gullo: Muestra mensajes al usuario (como errores o confirmaciones), 
     usando el sistema de mensajes de Django -->
@@ -7,7 +8,9 @@
         {% endfor %}
     {% endif %}
 <main>
-    <h1 class="text-center">Buscador de Pokemon</h1>
+    <h1 class="text-center alert alert-success " role="alert">Buscador de Pokemon</h1>
+    <!--Noelia B. agrege una "alerta" para que resalte el texto  -->
+    
 
     <div class="d-flex justify-content-center" style="margin-bottom: 1%">
         <!-- Buscador del sitio -->
@@ -17,24 +20,24 @@
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
     </div>
-
+    <!--Noelia . agregue emojis a los botones-->
     <div class="d-flex gap-1 col-2 mx-auto mb-3">
-        <form method="post" action="{% url 'filter_by_type' %}">
+        <form method="post" action="{% url 'filter_by_type' %}">  
             {% csrf_token %}
             <input type="hidden" name="type" value="fire">
-            <button type="submit" class="btn btn-danger">FUEGO</button>
+            <button type="submit" class="btn btn-danger">FUEGO🔥</button>
         </form>
 
         <form method="post" action="{% url 'filter_by_type' %}">
             {% csrf_token %}
             <input type="hidden" name="type" value="water">
-            <button type="submit" class="btn btn-primary">AGUA</button>
+            <button type="submit" class="btn btn-primary">AGUA💧</button>
         </form>
 
         <form method="post" action="{% url 'filter_by_type' %}">
             {% csrf_token %}
             <input type="hidden" name="type" value="grass">
-            <button type="submit" class="btn btn-success">PLANTA</button>
+            <button type="submit" class="btn btn-success">PLANTA🌿 </button>
         </form>
     </div>
 
@@ -43,8 +46,24 @@
         <h2 class="text-center">La búsqueda no arrojó resultados...</h2>
         {% else %} {% for img in images %}
         <div class="col">
+            <!--Noelia B. Como ya esta ejecutado un ciclo for donde se evaluan igamenes de una lista-->
+            <!--ejecutamos condicionales y le damos una orden. Utilizamos img.types que es una lista dada por la base de datos-->
+            <!--la informacion de la lista viene de una base de datos para tranformarla en un Card-->
+            
+            
+            {%if "fire" in img.types%}
+                <div class="card border-danger mb-3 " style="max-width: 540px; " >
+            {%elif  "water" in img.types%}
+                <div class="card border-primary mb-3" style="max-width: 540px; " >
+            {%elif "grass" in img.types %}
+                <div class="card border-success mb-3 "style="max-width: 540px; "  >
+            {%else%}
+                <div class="card border-warning mb-3" style="max-width: 540px; " >
+            {%endif%}
+            
             <!-- evaluar si la imagen pertenece al tipo fuego, agua o planta -->
-            <div class="card border-success mb-3 ms-5" style="max-width: 540px; ">
+            <!--Noelia B. Anulamos la linea donde se da color el marco gerenal de las tarjetas antes de ser clasificadas para que no se superpongan-->
+            <!--<div class="card border-success mb-3 ms-5" style="max-width: 540px; "-->
                  <div class="row g-0">
                      <div class="col-md-4">
                          <img src="{{ img.image }}" class="card-img-top"alt="imagen">
@@ -54,16 +73,21 @@
                         <div class="card-body">
                             <h3 class="card-title">{{ img.name }} #{{ img.id }} <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Master Ball"></h3>
                             <p class="card-text">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <div class="alert alert-warning alert-dismissible fade show " role="alert">
+
                                     {% for poketype in img.types %}
                                     <strong><em>{{poketype}}</em></strong>
                                     {% endfor %} 
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button type="button" class="btn-close hidden" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             </p>
-                            <p class="card-text"><small class="text-body-secondary">Altura: {{ img.height }}</small></p>
-                            <p class="card-text"><small class="text-body-secondary">Peso: {{ img.weight }}</small></p>
-                            <p class="card-text"><small class="text-body-secondary">Nivel de experiencia base: {{ img.base }}</small></p>
+                            <ul class="list-group mt-3">
+                            <!--Noelia B. Agrege un codigo para que encuadre los datos (altura, peso, nivel) del pokemon-->
+                            <p class="card-text list-group-item"><small class="text-body-secondary"><strong>Altura: {{ img.height }}</strong></small></p>
+                            <p class="card-text list-group-item "><small class="text-body-secondary"><strong>Peso: {{ img.weight }}</strong></small></p>
+                            <p class="card-text list-group-item"><small class="text-body-secondary"><strong>Nivel de experiencia base: {{ img.base }}</strong></small></p>
+                            <!--Noelia B. agrege a cada palabra(altura/peso/nivel) una etiqueta para que la letra y los numero  resalte-->
+                            </ul>
                         </div>
                         {% if request.user.is_authenticated %}
                         <div class="card-footer text-center">
@@ -83,7 +107,8 @@
                 </div>
             </div>
         </div>
-        {% endfor %} {% endif %}
+        {% endfor %} {% endif%}
+        
     </div>
 </main>
 {% endblock %}
