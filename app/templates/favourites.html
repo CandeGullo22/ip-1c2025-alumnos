@@ -1,4 +1,11 @@
 {% extends 'header.html' %} {% block content %}
+    <!--Candela Gullo: Muestra mensajes al usuario (como errores o confirmaciones), 
+    usando el sistema de mensajes de Django -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
