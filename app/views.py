@@ -5,6 +5,10 @@ from .layers.services import services
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
+#Noelia B. Importamos la función desdes services.py , para ello hay que escribir todas las rutas desde la rama principal
+#hasta llegar al archivo donde esta la funcion que necesitamos 
+from app.layers.services.services import filterByType
+
 #Candela Gullo: Importa el modelo User de Django, que representa a los usuarios registrados en la aplicacion.
 from django.contrib.auth.models import User
 
@@ -30,24 +34,13 @@ def home(request):
 
     #Candela Gullo: Hice que la lista retorne las tarjetas modificadas y definidas en la pagina "Services"
     images = services.getAllImages()
-
-    favourites = []
-    favourite_ids = []
-
-    #Candela Gullo: Verifica si el usuario esta logueado.
-    if request.user.is_authenticated:
-
-        #Candela Gullo: obtiene de la base de datos todos los favoritos que le pertenecen. Se usa filter(user=request.user) para filtrar solo los de ese usuario.
-        favourites = Favourite.objects.filter(user=request.user)
-
-        #Candela Gullo: es para extraer unicamente los id de cada favorito y guardarlos en la lista favourite_ids.
-        favourite_ids = [fav.id for fav in favourites]
+    
+    #Candela Gullo: esta lista va a retornar los favoritos del usuario
+    favourites = getAllFavouritesByUser()
 
     #Candela Gullo: retorna las imagenes en la pagina "home.html"
-    return render(request, 'home.html', {
-        'images': images,
-        'favourite_ids': favourite_ids
-    })
+    return render(request, 'home.html', {'images': images,'favourites': favourites})
+
 
 # función utilizada en el buscador.
 def search(request):
@@ -64,19 +57,19 @@ def search(request):
     else:
         return redirect('home')
 
-# funcion utilizada para filtrar por el tipo del Pokemon
+# función utilizada para filtrar por el tipo del Pokemon
 def filter_by_type(request):
     type = request.POST.get('type', '')
 
     if type != '':
-        images = [] # debe traer un listado filtrado de imagenes, segun si es o contiene ese tipo.
+#Noelia B. tengo que importar la funcion filterByType del archivo services.py que retorta card filtradas 
+        images = filterByType (type) # debe traer un listado filtrado de imágenes, segun si es o contiene ese tipo.
         favourite_list = []
 
         return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
     else:
         return redirect('home')
-    
-    
+#Noelia.B. Esta Funcion (filter_by_type) luego usada en "home.html" va a permitir que los botones de calsificacion "AGUA","PLANTA","FUEGO" se ejecuten  
     
 # Candela Gullo: esta funcion es para cuando un usuario accede a /register o similar
 def register(request):
