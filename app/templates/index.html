@@ -1,9 +1,12 @@
 {% extends 'header.html' %} {% block content %} {% if request.user.is_authenticated %}
-<h2 class="text-center">Bienvenido {{ user.username | upper }}!</h2>
+<h2 class="text-center">Bienvenido a Pokedex {{ user.username | upper }}!</h2>
 {% else %}
-<h2 class="text-center">Bienvenido!</h2>
+<h2 class="text-center alert alert-success" role="alert"> <strong>Bienvenido a Pokedex!</strong></h2>
+<!--Noelia B. agrege strong al saludo para que se vea con una letra mas resantada-->
+<!--Noelia B. agregamos una "alerta" al titulo para que resarlte el saludo con color-->
 {% endif %}
 <p class="text-center">
-    Mirá las imágenes desde <a href="{% url 'home' %}">este link.</a>
+    Mirá las imágenes desde <a href="{% url 'home' %}"class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" >este link⚪🔴</a>
+    <!--Noelia B. agrege un class para cambiar de color el link -->
 </p>
 {% endblock %}
